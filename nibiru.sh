@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [[ -z "$1" ]]
+then
+  echo "monkier is not set";
+  exit 1;
+fi
+
 # Install Go
 echo "================ Install Go ====================="
 curl https://dl.google.com/go/go1.19.3.linux-amd64.tar.gz | sudo tar -C/usr/local -zxvf - ;
