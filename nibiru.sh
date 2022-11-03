@@ -8,6 +8,7 @@ fi
 
 # Install Go
 echo "================ Install Go ====================="
+sudo rm -rf /usr/local/go
 curl https://dl.google.com/go/go1.19.3.linux-amd64.tar.gz | sudo tar -C/usr/local -zxvf - ;
 cat <<'EOF' >>$HOME/.profile
 export GOROOT=/usr/local/go
