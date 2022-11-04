@@ -47,7 +47,7 @@ curl -s https://rpc.testnet-1.nibiru.fi/genesis | jq -r .result.genesis >  $HOME
 echo "================ Set Peer and Seed ====================="
 cp $HOME/.nibid/config/config.toml $HOME/.nibid/config/config.toml.bak
 cp $HOME/.nibid/config/app.toml $HOME/.nibid/config/app.toml.bak
-PEERS="39243aace8e3bed2ca081963e7fc709126c62f92@34.82.218.172:26656"
+PEERS="39243aace8e3bed2ca081963e7fc709126c62f92@34.82.218.172:26656,5eecfdf089428a5a8e52d05d18aae1ad8503d14c@65.108.141.109:19656,5c30c7e8240f2c4108822020ae95d7b5da727e54@65.108.75.107:19656,968472e8769e0470fadad79febe51637dd208445@65.108.6.45:60656"
 seeds=""
 sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $HOME/.nibid/config/config.toml
 sed -i.bak -e "s/^seeds *=.*/seeds = \"$seeds\"/" $HOME/.nibid/config/config.toml
