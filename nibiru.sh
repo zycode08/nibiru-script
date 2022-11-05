@@ -1,6 +1,23 @@
 #!/bin/bash
 
-if [[ -z "$1" ]]
+PS3='Select an action: '
+options=(
+"Install Node"
+"Synchronization via StateSync"
+"Exit")
+
+select opt in "${options[@]}"
+do
+case $opt in
+
+"Install Node")
+
+echo -e "\e[1m\e[32m	Enter monkier:\e[0m"
+echo "_|-_|-_|-_|-_|-_|-_|"
+read moniker
+echo "_|-_|-_|-_|-_|-_|-_|"
+
+if [[ -z "$moniker" ]]
 then
   echo "monkier is not set";
   exit 1;
@@ -37,7 +54,7 @@ nibid version
 
 # Configure
 echo "================ Configure ====================="
-moniker=$1
+ehco "monkier is $moniker"
 nibid init $moniker --chain-id=nibiru-testnet-1
 nibid config chain-id nibiru-testnet-1
 
@@ -47,7 +64,7 @@ curl -s https://rpc.testnet-1.nibiru.fi/genesis | jq -r .result.genesis >  $HOME
 echo "================ Set Peer and Seed ====================="
 cp $HOME/.nibid/config/config.toml $HOME/.nibid/config/config.toml.bak
 cp $HOME/.nibid/config/app.toml $HOME/.nibid/config/app.toml.bak
-PEERS="39243aace8e3bed2ca081963e7fc709126c62f92@34.82.218.172:26656,5eecfdf089428a5a8e52d05d18aae1ad8503d14c@65.108.141.109:19656,5c30c7e8240f2c4108822020ae95d7b5da727e54@65.108.75.107:19656,968472e8769e0470fadad79febe51637dd208445@65.108.6.45:60656,1a307de6dff410984fe6ae23f2fc6427519ed4aa@34.84.28.232:26656"
+PEERS="39243aace8e3bed2ca081963e7fc709126c62f92@34.82.218.172:26656,1a307de6dff410984fe6ae23f2fc6427519ed4aa@34.84.28.232:26656,37713248f21c37a2f022fbbb7228f02862224190@35.243.130.198:26656,ff59bff2d8b8fb6114191af7063e92a9dd637bd9@35.185.114.96:26656,cb431d789fe4c3f94873b0769cb4fce5143daf97@35.227.113.63:26656,968472e8769e0470fadad79febe51637dd208445@65.108.6.45:60656"
 seeds=""
 sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $HOME/.nibid/config/config.toml
 sed -i.bak -e "s/^seeds *=.*/seeds = \"$seeds\"/" $HOME/.nibid/config/config.toml
@@ -62,20 +79,20 @@ sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_rec
 sed -i -e "s/^pruning-keep-every *=.*/pruning-keep-every = \"$pruning_keep_every\"/" $HOME/.nibid/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.nibid/config/app.toml
 
-echo "================ Set Fast Sync ====================="
-SNAP_RPC=https://t-nibiru.rpc.utsa.tech:443
+#echo "================ Set Fast Sync ====================="
+#SNAP_RPC=https://t-nibiru.rpc.utsa.tech:443
 
-LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height); \
-BLOCK_HEIGHT=$((LATEST_HEIGHT - 2000)); \
-TRUST_HASH=$(curl -s "$SNAP_RPC/block?height=$BLOCK_HEIGHT" | jq -r .result.block_id.hash)
+#LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height); \
+#BLOCK_HEIGHT=$((LATEST_HEIGHT - 2000)); \
+#TRUST_HASH=$(curl -s "$SNAP_RPC/block?height=$BLOCK_HEIGHT" | jq -r .result.block_id.hash)
 
-echo $LATEST_HEIGHT $BLOCK_HEIGHT $TRUST_HASH
+#echo $LATEST_HEIGHT $BLOCK_HEIGHT $TRUST_HASH
 
-sed -i.bak -E "s|^(enable[[:space:]]+=[[:space:]]+).*$|\1true| ; \
-s|^(rpc_servers[[:space:]]+=[[:space:]]+).*$|\1\"$SNAP_RPC,$SNAP_RPC\"| ; \
-s|^(trust_height[[:space:]]+=[[:space:]]+).*$|\1$BLOCK_HEIGHT| ; \
-s|^(trust_hash[[:space:]]+=[[:space:]]+).*$|\1\"$TRUST_HASH\"| ; \
-s|^(seeds[[:space:]]+=[[:space:]]+).*$|\1\"\"|" $HOME/.nibid/config/config.toml
+#sed -i.bak -E "s|^(enable[[:space:]]+=[[:space:]]+).*$|\1true| ; \
+#s|^(rpc_servers[[:space:]]+=[[:space:]]+).*$|\1\"$SNAP_RPC,$SNAP_RPC\"| ; \
+#s|^(trust_height[[:space:]]+=[[:space:]]+).*$|\1$BLOCK_HEIGHT| ; \
+#s|^(trust_hash[[:space:]]+=[[:space:]]+).*$|\1\"$TRUST_HASH\"| ; \
+#s|^(seeds[[:space:]]+=[[:space:]]+).*$|\1\"\"|" $HOME/.nibid/config/config.toml
 
 echo "================ Set Min Gas Price ====================="
 sed -i 's/minimum-gas-prices =.*/minimum-gas-prices = "0.025unibi"/g' $HOME/.nibid/config/app.toml
@@ -117,4 +134,30 @@ sudo systemctl daemon-reload
 sudo systemctl enable nibiru
 sudo systemctl start nibiru
 
+break
+;;
 
+"Synchronization via StateSync")
+peers="968472e8769e0470fadad79febe51637dd208445@65.108.6.45:60656"
+sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$peers\"/" $HOME/.nibid/config/config.toml
+SNAP_RPC=https://t-nibiru.rpc.utsa.tech:443
+LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height); \
+BLOCK_HEIGHT=$((LATEST_HEIGHT - 2000)); \
+TRUST_HASH=$(curl -s "$SNAP_RPC/block?height=$BLOCK_HEIGHT" | jq -r .result.block_id.hash)
+echo $LATEST_HEIGHT $BLOCK_HEIGHT $TRUST_HASH
+sed -i.bak -E "s|^(enable[[:space:]]+=[[:space:]]+).*$|\1true| ; \
+s|^(rpc_servers[[:space:]]+=[[:space:]]+).*$|\1\"$SNAP_RPC,$SNAP_RPC\"| ; \
+s|^(trust_height[[:space:]]+=[[:space:]]+).*$|\1$BLOCK_HEIGHT| ; \
+s|^(trust_hash[[:space:]]+=[[:space:]]+).*$|\1\"$TRUST_HASH\"| ; \
+s|^(seeds[[:space:]]+=[[:space:]]+).*$|\1\"\"|" $HOME/.nibid/config/config.toml
+nibid tendermint unsafe-reset-all --home $HOME/.nibid --keep-addr-book
+sudo systemctl restart nibid && journalctl -u nibid -f -o cat
+
+break
+;;
+
+"Exit")
+exit
+
+esac
+done
