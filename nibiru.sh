@@ -140,6 +140,8 @@ break
 "Synchronization via StateSync")
 peers="39243aace8e3bed2ca081963e7fc709126c62f92@34.82.218.172:26656,1a307de6dff410984fe6ae23f2fc6427519ed4aa@34.84.28.232:26656,37713248f21c37a2f022fbbb7228f02862224190@35.243.130.198:26656,ff59bff2d8b8fb6114191af7063e92a9dd637bd9@35.185.114.96:26656,cb431d789fe4c3f94873b0769cb4fce5143daf97@35.227.113.63:26656,968472e8769e0470fadad79febe51637dd208445@65.108.6.45:60656"
 sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$peers\"/" $HOME/.nibid/config/config.toml
+sed -i 's/max_num_inbound_peers *=.*/max_num_inbound_peers = 100/g' $HOME/.nibid/config/config.toml
+sed -i 's/max_num_outbound_peers *=.*/max_num_outbound_peers = 100/g' $HOME/.nibid/config/config.toml
 SNAP_RPC=https://t-nibiru.rpc.utsa.tech:443
 LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height); \
 BLOCK_HEIGHT=$((LATEST_HEIGHT - 2000)); \
