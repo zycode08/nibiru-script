@@ -151,7 +151,7 @@ s|^(trust_height[[:space:]]+=[[:space:]]+).*$|\1$BLOCK_HEIGHT| ; \
 s|^(trust_hash[[:space:]]+=[[:space:]]+).*$|\1\"$TRUST_HASH\"| ; \
 s|^(seeds[[:space:]]+=[[:space:]]+).*$|\1\"\"|" $HOME/.nibid/config/config.toml
 nibid tendermint unsafe-reset-all --home $HOME/.nibid --keep-addr-book
-sudo systemctl restart nibid && journalctl -u nibid -f -o cat
+sudo systemctl restart nibiru && journalctl -u nibiru -f -o cat
 
 break
 ;;
