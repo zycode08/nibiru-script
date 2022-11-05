@@ -26,7 +26,7 @@ fi
 # Install Go
 echo "================ Install Go ====================="
 sudo rm -rf /usr/local/go
-curl https://dl.google.com/go/go1.19.3.linux-amd64.tar.gz | sudo tar -C/usr/local -zxvf - ;
+curl https://dl.google.com/go/go1.19.3.linux-amd64.tar.gz | sudo tar -C/usr/local -zxvf - >/dev/null 2>&1;
 cat <<'EOF' >>$HOME/.profile
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
@@ -39,8 +39,8 @@ go version
 
 # Install other dependency
 echo "================ Install Dependency ====================="
-sudo apt-get update -y && sudo apt-get upgrade -y;
-sudo apt-get install curl build-essential jq git -y;
+sudo apt-get update -y && sudo apt-get upgrade -y >/dev/null 2>&1;
+sudo apt-get install curl build-essential jq git -y >/dev/null 2>&1;
 
 # Install Nibiru
 echo "================ Install Nibiru ====================="
@@ -48,7 +48,7 @@ cd $HOME
 git clone https://github.com/NibiruChain/nibiru
 cd nibiru
 git checkout v0.15.0
-make install
+make install >/dev/null 2>&1
 
 nibid version
 
@@ -138,7 +138,7 @@ break
 ;;
 
 "Synchronization via StateSync")
-peers="968472e8769e0470fadad79febe51637dd208445@65.108.6.45:60656"
+peers="39243aace8e3bed2ca081963e7fc709126c62f92@34.82.218.172:26656,1a307de6dff410984fe6ae23f2fc6427519ed4aa@34.84.28.232:26656,37713248f21c37a2f022fbbb7228f02862224190@35.243.130.198:26656,ff59bff2d8b8fb6114191af7063e92a9dd637bd9@35.185.114.96:26656,cb431d789fe4c3f94873b0769cb4fce5143daf97@35.227.113.63:26656,968472e8769e0470fadad79febe51637dd208445@65.108.6.45:60656"
 sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$peers\"/" $HOME/.nibid/config/config.toml
 SNAP_RPC=https://t-nibiru.rpc.utsa.tech:443
 LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height); \
