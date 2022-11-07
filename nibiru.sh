@@ -4,6 +4,7 @@ PS3='Select an action: '
 options=(
 "Install Node"
 "Synchronization via StateSync"
+"Update peer"
 "Exit")
 
 select opt in "${options[@]}"
@@ -64,7 +65,7 @@ curl -s https://rpc.testnet-1.nibiru.fi/genesis | jq -r .result.genesis >  $HOME
 echo "================ Set Peer and Seed ====================="
 cp $HOME/.nibid/config/config.toml $HOME/.nibid/config/config.toml.bak
 cp $HOME/.nibid/config/app.toml $HOME/.nibid/config/app.toml.bak
-PEERS="bab80bd8f12dd728e80dce145f52d1e52c5d6b9c@104.155.185.53:26656,37713248f21c37a2f022fbbb7228f02862224190@35.243.130.198:26656,ff59bff2d8b8fb6114191af7063e92a9dd637bd9@35.185.114.96:26656,cb431d789fe4c3f94873b0769cb4fce5143daf97@35.227.113.63:26656,968472e8769e0470fadad79febe51637dd208445@65.108.6.45:60656"
+PEERS="34c50ae477d645d385b3198a21fa68d91dccc7df@34.164.150.25:26656,bab80bd8f12dd728e80dce145f52d1e52c5d6b9c@104.155.185.53:26656,37713248f21c37a2f022fbbb7228f02862224190@35.243.130.198:26656,ff59bff2d8b8fb6114191af7063e92a9dd637bd9@35.185.114.96:26656,cb431d789fe4c3f94873b0769cb4fce5143daf97@35.227.113.63:26656,968472e8769e0470fadad79febe51637dd208445@65.108.6.45:60656"
 seeds=""
 sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $HOME/.nibid/config/config.toml
 sed -i.bak -e "s/^seeds *=.*/seeds = \"$seeds\"/" $HOME/.nibid/config/config.toml
@@ -152,6 +153,17 @@ s|^(rpc_servers[[:space:]]+=[[:space:]]+).*$|\1\"$SNAP_RPC,$SNAP_RPC\"| ; \
 s|^(trust_height[[:space:]]+=[[:space:]]+).*$|\1$BLOCK_HEIGHT| ; \
 s|^(trust_hash[[:space:]]+=[[:space:]]+).*$|\1\"$TRUST_HASH\"| ; \
 s|^(seeds[[:space:]]+=[[:space:]]+).*$|\1\"\"|" $HOME/.nibid/config/config.toml
+nibid tendermint unsafe-reset-all --home $HOME/.nibid --keep-addr-book
+sudo systemctl restart nibiru && journalctl -u nibiru -f -o cat
+
+break
+;;
+
+
+"Update peer")
+
+peers="34c50ae477d645d385b3198a21fa68d91dccc7df@34.164.150.25:26656,bab80bd8f12dd728e80dce145f52d1e52c5d6b9c@104.155.185.53:26656,39243aace8e3bed2ca081963e7fc709126c62f92@34.82.218.172:26656,1a307de6dff410984fe6ae23f2fc6427519ed4aa@34.84.28.232:26656,37713248f21c37a2f022fbbb7228f02862224190@35.243.130.198:26656,ff59bff2d8b8fb6114191af7063e92a9dd637bd9@35.185.114.96:26656,cb431d789fe4c3f94873b0769cb4fce5143daf97@35.227.113.63:26656,968472e8769e0470fadad79febe51637dd208445@65.108.6.45:60656"
+sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$peers\"/" $HOME/.nibid/config/config.toml
 nibid tendermint unsafe-reset-all --home $HOME/.nibid --keep-addr-book
 sudo systemctl restart nibiru && journalctl -u nibiru -f -o cat
 
