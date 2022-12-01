@@ -199,7 +199,7 @@ break
 
 "Backup")
 
-tar -cvf $HOME/.nibid/config $HOME/config.tar
+tar -cvf $HOME/config.tar $HOME/.nibid/config
 
 break
 ;;
