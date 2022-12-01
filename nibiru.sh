@@ -5,6 +5,7 @@ options=(
 "Install Node"
 "Synchronization via StateSync"
 "Update peer"
+"Backup"
 "Exit")
 
 select opt in "${options[@]}"
@@ -192,6 +193,13 @@ peers="b32bb87364a52df3efcbe9eacc178c96b35c823a@nibiru-testnet.nodejumper.io:276
 
 sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$peers\"/" $HOME/.nibid/config/config.toml
 sudo systemctl restart nibiru && journalctl -u nibiru -f -o cat
+
+break
+;;
+
+"Backup")
+
+tar -cvf $HOME/.nibid/config $HOME/config.tar
 
 break
 ;;
